@@ -19,6 +19,42 @@ class TestVendingMachine(unittest.TestCase):
         self.assertIn(ProductName("orbit"), available_products)
         self.assertNotIn(ProductName("lays"), available_products)
 
+    def test_loading_products_twice(self):
+        machine = Machine(slots=6, slot_depth=10)
+        products = {
+            ProductName("coca-cola"): Product(name=ProductName("coca-cola"), quantity=7, price=Decimal(2.1)),
+            ProductName("mars"): Product(name=ProductName("mars"), quantity=5, price=Decimal(1.9)),
+            ProductName("orbit"): Product(name=ProductName("orbit"), quantity=12, price=Decimal(2.3)),
+        }
+        machine.load_products(products)
+        products_2 = {
+            ProductName("mars"): Product(name=ProductName("mars"), quantity=5, price=Decimal(1.9)),
+            ProductName("lays"): Product(name=ProductName("lays"), quantity=8, price=Decimal(2.3)),
+            ProductName("coca-cola"): Product(name=ProductName("coca-cola"), quantity=7, price=Decimal(2.1)),
+        }
+        machine.load_products(products_2)
+        available_products = machine.get_available_products().keys()
+        self.assertIn(ProductName("coca-cola"), available_products)
+        self.assertIn(ProductName("mars"), available_products)
+        self.assertIn(ProductName("orbit"), available_products)
+        self.assertIn(ProductName("lays"), available_products)
+
+    def test_second_delivery_to_big(self):
+        machine = Machine(slots=5, slot_depth=10)
+        products = {
+            ProductName("coca-cola"): Product(name=ProductName("coca-cola"), quantity=7, price=Decimal(2.1)),
+            ProductName("mars"): Product(name=ProductName("mars"), quantity=5, price=Decimal(1.9)),
+            ProductName("orbit"): Product(name=ProductName("orbit"), quantity=12, price=Decimal(2.3)),
+        }
+        machine.load_products(products)
+        products_2 = {
+            ProductName("mars"): Product(name=ProductName("mars"), quantity=5, price=Decimal(1.9)),
+            ProductName("lays"): Product(name=ProductName("lays"), quantity=8, price=Decimal(2.3)),
+            ProductName("coca-cola"): Product(name=ProductName("coca-cola"), quantity=7, price=Decimal(2.1)),
+        }
+        with self.assertRaises(MachineOverloadedException):
+            machine.load_products(products_2)
+
     def test_too_many_product_kinds(self):
         machine = Machine(slots=2, slot_depth=10)
         products = {
