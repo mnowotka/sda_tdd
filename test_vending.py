@@ -135,7 +135,7 @@ class TestVendingMachine(unittest.TestCase):
         machine.load_products(products)
         money = Coins({Decimal(5): 1})
         nonexistent_slot_code = SlotCode("doesn't exist")
-        self.assertNotIn(nonexistent_slot_code, [code for code, _ in machine.get_available_products()])
+        self.assertNotIn(nonexistent_slot_code, [code for code, _ in machine.get_available_products().items()])
         product, change = machine.choose_product(nonexistent_slot_code, money)
         self.assertIsNone(product)
         self.assertEqual(money, change)

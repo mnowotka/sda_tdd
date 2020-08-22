@@ -5,9 +5,10 @@ import typing
 
 ProductName = typing.NewType('ProductName', str)
 SlotCode = typing.NewType('SlotCode', str)
+Price = typing.NewType('Price', Decimal)
 Assortment = typing.Dict[ProductName, 'Product']
-Coins = Counter[Decimal, int]
-Menu = typing.Dict[ProductName, typing.Tuple[SlotCode, Decimal]]
+Coins = typing.Counter[Decimal]
+Menu = typing.Dict[ProductName, typing.Tuple[SlotCode, Price]]
 
 
 class MachineOverloadedException(Exception):
@@ -23,22 +24,24 @@ class Product:
 
 class Machine:
     def __init__(self, slots: int, slot_depth: int) -> None:
-        pass
+        self._available_assortment: Assortment = {}
+        self._coins: Coins = Counter()
 
     def load_products(self, assortment: Assortment) -> None:
-        pass
+        self._available_assortment = assortment
 
     def load_coins(self, coins: Coins) -> None:
         pass
 
     def get_available_products(self) -> Menu:
-        pass
+        ret = {name: (SlotCode("1"), product.price) for name, product in self._available_assortment.items()}
+        return ret
 
     def choose_product(self, product_code: SlotCode, money: Coins) -> typing.Tuple[typing.Optional[Product], typing.Optional[Coins]]:
-        pass
+        return None, money
 
     def get_balance(self) -> Decimal:
-        pass
+        return sum([face_value * quantity for face_value, quantity in self._coins.items()])
 
     def cash_out(self) -> Coins:
         pass
