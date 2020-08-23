@@ -144,7 +144,7 @@ class TestVendingMachine(unittest.TestCase):
         self.assertIsNotNone(product)
         self.assertIsNotNone(change)
         self.assertEqual(product.name, ProductName("coca-cola"))
-        self.assertEqual(change, Coins({Decimal('0.2'): 2}))
+        self.assertEqual(Coins({Decimal('0.2'): 2}), change)
 
     def test_cant_get_product_for_too_little_money(self):
         machine = Machine(slots=3, slot_depth=10)
